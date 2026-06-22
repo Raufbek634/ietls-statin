@@ -9,7 +9,9 @@ class Config:
 
     @staticmethod
     def get_database_uri():
-        uri = os.environ.get('DATABASE_URL')
+        uri = (os.environ.get('DATABASE_URL')
+               or os.environ.get('POSTGRES_URL')
+               or os.environ.get('POSTGRES_URL_NON_POOLING'))
         if uri:
             uri = uri.replace('postgres://', 'postgresql://')
             return uri
