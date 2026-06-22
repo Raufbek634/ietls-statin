@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}IELTS ZONE{% endblock %}</title>
+    <title>{% block title %}{{ _('site_name') }}{% endblock %}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -20,18 +20,18 @@
             <div class="nav__menu" id="navMenu">
                 <div class="nav__links">
                     <div class="nav__dropdown" id="ieltsDropdown">
-                        <button class="nav__link nav__dropdown-trigger">IELTS</button>
+                        <button class="nav__link nav__dropdown-trigger">{{ _('nav_ielts') }}</button>
                         <div class="nav__dropdown-menu">
-                            <a href="/reading">Reading</a>
-                            <a href="/listening">Listening</a>
-                            <a href="/writing">Writing</a>
-                            <a href="/speaking">Speaking</a>
-                            <a href="/vocabulary">Vocabulary</a>
-                            <a href="/mock-exam">Mock Exam</a>
+                            <a href="/reading">{{ _('reading') }}</a>
+                            <a href="/listening">{{ _('listening') }}</a>
+                            <a href="/writing">{{ _('writing') }}</a>
+                            <a href="/speaking">{{ _('speaking') }}</a>
+                            <a href="/vocabulary">{{ _('vocabulary') }}</a>
+                            <a href="/mock-exam">{{ _('mock_exam') }}</a>
                         </div>
                     </div>
                     <div class="nav__dropdown" id="cefrDropdown">
-                        <button class="nav__link nav__dropdown-trigger">CEFR</button>
+                        <button class="nav__link nav__dropdown-trigger">{{ _('nav_cefr') }}</button>
                         <div class="nav__dropdown-menu">
                             <a href="/cefr/a1">A1 — Beginner</a>
                             <a href="/cefr/a2">A2 — Elementary</a>
@@ -41,16 +41,26 @@
                             <a href="/cefr/c2">C2 — Proficient</a>
                         </div>
                     </div>
-                    <a href="/leaderboard" class="nav__link">Leaderboard</a>
+                    <a href="/leaderboard" class="nav__link">{{ _('nav_leaderboard') }}</a>
                 </div>
                 <div class="nav__auth">
+                    <div class="nav__dropdown" id="langDropdown">
+                        <button class="nav__link nav__dropdown-trigger" style="text-transform:uppercase;font-size:0.75rem;font-weight:600">
+                            {% if current_lang == 'uz' %}UZ{% elif current_lang == 'ru' %}RU{% else %}EN{% endif %}
+                        </button>
+                        <div class="nav__dropdown-menu" style="min-width:80px">
+                            <a href="/set-lang/uz">O'zbek</a>
+                            <a href="/set-lang/en">English</a>
+                            <a href="/set-lang/ru">Русский</a>
+                        </div>
+                    </div>
                     {% if current_user.is_authenticated %}
-                    <a href="/results" class="nav__link nav__link--sm">Results</a>
+                    <a href="/results" class="nav__link nav__link--sm">{{ _('nav_results') }}</a>
                     <a href="/profile" class="btn btn--ghost btn--sm">{{ current_user.username }}</a>
-                    <a href="/logout" class="btn btn--ghost btn--sm">Logout</a>
+                    <a href="/logout" class="btn btn--ghost btn--sm">{{ _('nav_logout') }}</a>
                     {% else %}
-                    <a href="/login" class="btn btn--ghost btn--sm">Login</a>
-                    <a href="/register" class="btn btn--primary btn--sm">Register</a>
+                    <a href="/login" class="btn btn--ghost btn--sm">{{ _('nav_login') }}</a>
+                    <a href="/register" class="btn btn--primary btn--sm">{{ _('nav_register') }}</a>
                     {% endif %}
                 </div>
             </div>
@@ -74,18 +84,18 @@
         <div class="footer__inner">
             <div class="footer__cols">
                 <div class="footer__col">
-                    <h4>IELTS ZONE</h4>
-                    <p>IELTS va CEFR tayyorgarlik platformasi</p>
+                    <h4>{{ _('site_name') }}</h4>
+                    <p>{{ _('site_desc') }}</p>
                 </div>
                 <div class="footer__col">
-                    <h4>IELTS</h4>
-                    <a href="/reading">Reading</a>
-                    <a href="/listening">Listening</a>
-                    <a href="/writing">Writing</a>
-                    <a href="/speaking">Speaking</a>
+                    <h4>{{ _('nav_ielts') }}</h4>
+                    <a href="/reading">{{ _('reading') }}</a>
+                    <a href="/listening">{{ _('listening') }}</a>
+                    <a href="/writing">{{ _('writing') }}</a>
+                    <a href="/speaking">{{ _('speaking') }}</a>
                 </div>
                 <div class="footer__col">
-                    <h4>CEFR</h4>
+                    <h4>{{ _('nav_cefr') }}</h4>
                     <a href="/cefr/a1">A1</a>
                     <a href="/cefr/a2">A2</a>
                     <a href="/cefr/b1">B1</a>
@@ -95,7 +105,7 @@
                 </div>
             </div>
             <div class="footer__bottom">
-                <p>&copy; 2026 IELTS ZONE. All rights reserved.</p>
+                <p>&copy; 2026 {{ _('site_name') }}. {{ _('copyright') }}</p>
             </div>
         </div>
     </footer>

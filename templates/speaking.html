@@ -1,26 +1,26 @@
 {% extends "base.html" %}
-{% block title %}Speaking — IELTS Pro{% endblock %}
+{% block title %}{{ _('speaking') }} — IELTS ZONE{% endblock %}
 {% block content %}
-<div class="section">
+<div class="section anim-fade">
     <div class="section__header">
-        <h1>Speaking</h1>
+        <h1>{{ _('speaking') }}</h1>
         <p>Part 1, 2, 3 savollari va namuna javoblar</p>
     </div>
     {% if questions %}
     <div class="grid">
         {% for q in questions %}
-        <div class="card">
-            <div class="card__title">{{ q.title }}</div>
-            <div class="card__desc">{{ q.description or 'Speaking question' }}</div>
-            <div class="card__meta">
+        <div class="card anim-fade-up" style="animation-delay:{{ loop.index * 0.1 }}s">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
                 <span class="badge badge--{{ 'easy' if q.difficulty == 'easy' else 'medium' if q.difficulty == 'medium' else 'hard' }}">{{ q.difficulty }}</span>
+                <span style="font-size:0.8125rem;color:var(--text-muted)">{{ q.title }}</span>
             </div>
+            <div style="font-size:0.9375rem;color:var(--text-secondary);line-height:1.7">{{ q.description or q.content }}</div>
         </div>
         {% endfor %}
     </div>
     {% else %}
     <div class="card text-center">
-        <p style="color:var(--text-muted)">Hozircha savollar mavjud emas. Tez orada qo'shiladi.</p>
+        <p style="color:var(--text-muted)">{{ _('no_tests') }}</p>
     </div>
     {% endif %}
 </div>

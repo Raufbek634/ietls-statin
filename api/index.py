@@ -1,14 +1,16 @@
 import os
 import sys
+import json
 from datetime import datetime, timezone
 
 from flask import Flask, render_template, request, jsonify, redirect, url_for, flash
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+from sqlalchemy import text
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from config import Config
-from models import db, User, Result, Test, Vocabulary
+from models import db, User, Result, Test, Vocabulary, Question
 
 app = Flask(
     __name__,
@@ -17,6 +19,14 @@ app = Flask(
 )
 app.config.from_object(Config)
 app.config['SQLALCHEMY_DATABASE_URI'] = Config.get_database_uri()
+
+
+@app.template_filter('fromjson')
+def fromjson_filter(value):
+    try:
+        return json.loads(value)
+    except:
+        return []
 
 db.init_app(app)
 login_manager = LoginManager(app)
@@ -30,36 +40,40 @@ def load_user(user_id):
 
 with app.app_context():
     db.create_all()
-    if not Vocabulary.query.first():
-        _words = [
-            ("analyze","tahlil qilmoq","To examine in detail","The data was analyzed carefully.","Academic"),
-            ("significant","ahamiyatli","Important or notable","A significant increase was observed.","Academic"),
-            ("consequently","natijada","As a result","The weather was bad; consequently, the event was canceled.","Linking"),
-            ("demonstrate","ko'rsatmoq","To show clearly","The experiment demonstrates the theory.","Academic"),
-            ("environment","atrof-muhit","The surroundings or conditions","We must protect the environment.","Environment"),
-            ("global","global, jahon","Relating to the whole world","Global warming is a serious issue.","Environment"),
-            ("tradition","an'ana","A long-established custom","This tradition dates back centuries.","Culture"),
-            ("diverse","xilma-xil","Showing variety","The city has a diverse population.","Culture"),
-            ("economy","iqtisodiyot","The state of trade and money","The economy is growing steadily.","Economics"),
-            ("investment","investitsiya","Putting money into something","Education is a good investment.","Economics"),
-            ("technology","texnologiya","Application of scientific knowledge","Technology is advancing rapidly.","Technology"),
-            ("innovation","yangilik","A new method or product","Innovation drives progress.","Technology"),
-            ("benefit","foyda","An advantage or profit","Regular exercise has many benefits.","Health"),
-            ("nutrition","ovqatlanish","The process of providing food","Good nutrition is essential.","Health"),
-            ("urban","shahar","Relating to a city","Urban areas are growing fast.","Geography"),
-            ("rural","qishloq","Relating to the countryside","Rural communities rely on farming.","Geography"),
-        ]
-        for w,t,d,e,c in _words:
-            db.session.add(Vocabulary(word=w,translation=t,definition=d,example=e,category=c))
-        for title,desc,diff in [("The History of the Internet","Academic reading passage","hard"),("Climate Change Effects","Academic passage about climate","medium")]:
-            db.session.add(Test(type='reading',title=title,description=desc,difficulty=diff))
-        for title,desc,diff in [("Conversation: University Registration","Listening Part 1","easy"),("Lecture: Marine Biology","Listening Part 4","hard")]:
-            db.session.add(Test(type='listening',title=title,description=desc,difficulty=diff))
-        for title,desc,diff in [("Task 1: Chart Description","Describe a chart about energy","medium"),("Task 2: Education","Should university be free? Discuss.","medium")]:
-            db.session.add(Test(type='writing',title=title,description=desc,difficulty=diff))
-        for title,desc,diff in [("Part 1: Work/Study","Do you work or study?","easy"),("Part 2: Describe a Place","Describe a place you visited.","medium"),("Part 3: Technology","How has technology changed communication?","hard")]:
-            db.session.add(Test(type='speaking',title=title,description=desc,difficulty=diff))
+    try:
+        db.session.execute(db.text('ALTER TABLE test ADD COLUMN passage TEXT'))
         db.session.commit()
+    except:
+        db.session.rollback()
+
+
+_translations = {}
+_tr_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'translations')
+if os.path.isdir(_tr_path):
+    for f in os.listdir(_tr_path):
+        if f.endswith('.json'):
+            lang = f.replace('.json', '')
+            with open(os.path.join(_tr_path, f), 'r', encoding='utf-8') as fh:
+                _translations[lang] = json.load(fh)
+
+
+def _(key, lang='uz'):
+    return _translations.get(lang, _translations.get('uz', {})).get(key, key)
+
+
+@app.context_processor
+def inject_globals():
+    lang = request.cookies.get('lang', 'uz')
+    return dict(_=lambda k: _(k, lang), lang=lang, current_lang=lang)
+
+
+@app.route('/set-lang/<lang>')
+def set_lang(lang):
+    if lang in ('uz', 'en', 'ru'):
+        resp = redirect(request.referrer or '/')
+        resp.set_cookie('lang', lang, max_age=365*24*3600)
+        return resp
+    return redirect('/')
 
 
 @app.route('/')
@@ -125,7 +139,40 @@ def reading_test(test_id):
     test = db.session.get(Test, test_id)
     if not test or test.type != 'reading':
         return redirect(url_for('reading'))
-    return render_template('reading_test.html', test=test)
+    questions = Question.query.filter_by(test_id=test.id).order_by(Question.order).all()
+    return render_template('reading_test.html', test=test, questions=questions)
+
+
+@app.route('/api/check-answers', methods=['POST'])
+def check_answers():
+    data = request.get_json()
+    if not data:
+        return jsonify({'error': 'No data'}), 400
+    answers = data.get('answers', {})
+    test_id = data.get('test_id')
+    questions = Question.query.filter_by(test_id=test_id).order_by(Question.order).all()
+    correct = 0
+    total = len(questions)
+    results = []
+    for q in questions:
+        user_ans = answers.get(str(q.id), '').strip()
+        correct_ans = q.correct_answer.strip()
+        is_correct = user_ans.lower() == correct_ans.lower()
+        if is_correct:
+            correct += 1
+        results.append({
+            'id': q.id,
+            'correct': is_correct,
+            'user_answer': user_ans,
+            'correct_answer': correct_ans,
+            'question_text': q.question_text
+        })
+    return jsonify({
+        'score': correct,
+        'total': total,
+        'percentage': round(correct / total * 100, 1) if total else 0,
+        'results': results
+    })
 
 
 @app.route('/listening')

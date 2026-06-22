@@ -41,7 +41,20 @@ class Test(db.Model):
     description = db.Column(db.Text, nullable=True)
     content = db.Column(db.Text, nullable=True)
     difficulty = db.Column(db.String(20), default='medium')
+    passage = db.Column(db.Text, nullable=True)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+
+    questions = db.relationship('Question', backref='test', lazy=True, cascade='all, delete-orphan',
+                                order_by='Question.order')
+
+
+class Question(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    test_id = db.Column(db.Integer, db.ForeignKey('test.id'), nullable=False)
+    question_text = db.Column(db.Text, nullable=False)
+    options = db.Column(db.Text, nullable=True)
+    correct_answer = db.Column(db.String(500), nullable=False)
+    order = db.Column(db.Integer, default=0)
 
 
 class Vocabulary(db.Model):

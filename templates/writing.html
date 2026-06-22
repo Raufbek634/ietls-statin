@@ -1,27 +1,27 @@
 {% extends "base.html" %}
-{% block title %}Writing — IELTS Pro{% endblock %}
+{% block title %}{{ _('writing') }} — IELTS ZONE{% endblock %}
 {% block content %}
-<div class="section">
+<div class="section anim-fade">
     <div class="section__header">
-        <h1>Writing</h1>
+        <h1>{{ _('writing') }}</h1>
         <p>Task 1 va Task 2 mavzulari</p>
     </div>
     {% if topics %}
     <div class="grid">
         {% for topic in topics %}
-        <div class="card">
-            <div class="card__title">{{ topic.title }}</div>
-            <div class="card__desc">{{ topic.description or 'Writing task' }}</div>
-            <div class="card__meta">
+        <div class="card anim-fade-up" style="animation-delay:{{ loop.index * 0.1 }}s">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
                 <span class="badge badge--{{ 'easy' if topic.difficulty == 'easy' else 'medium' if topic.difficulty == 'medium' else 'hard' }}">{{ topic.difficulty }}</span>
             </div>
-            <button class="btn btn--ghost btn--sm mt-16" onclick="alert('Writing editor coming soon')">Start Writing</button>
+            <div class="card__title">{{ topic.title }}</div>
+            <div class="card__desc">{{ topic.description or 'Writing task' }}</div>
+            <textarea class="writing-answer" placeholder="Javobingizni yozing..." style="width:100%;min-height:120px;padding:14px;border:1px solid var(--border);border-radius:10px;font-size:0.875rem;font-family:inherit;color:var(--text);background:var(--surface);outline:none;margin-top:12px;resize:vertical" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"></textarea>
         </div>
         {% endfor %}
     </div>
     {% else %}
     <div class="card text-center">
-        <p style="color:var(--text-muted)">Hozircha mavzular mavjud emas. Tez orada qo'shiladi.</p>
+        <p style="color:var(--text-muted)">{{ _('no_tests') }}</p>
     </div>
     {% endif %}
 </div>

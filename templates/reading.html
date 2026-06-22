@@ -1,9 +1,9 @@
 {% extends "base.html" %}
-{% block title %}Reading — IELTS Pro{% endblock %}
+{% block title %}{{ _('reading') }} — IELTS ZONE{% endblock %}
 {% block content %}
-<div class="section">
+<div class="section anim-fade">
     <div class="section__header">
-        <h1>Reading</h1>
+        <h1>{{ _('reading') }}</h1>
         <p>Academic va General Training reading testlari</p>
     </div>
     {% if tests %}
@@ -14,13 +14,14 @@
             <div class="card__desc">{{ test.description or 'Reading test' }}</div>
             <div class="card__meta">
                 <span class="badge badge--{{ 'easy' if test.difficulty == 'easy' else 'medium' if test.difficulty == 'medium' else 'hard' }}">{{ test.difficulty }}</span>
+                <span>{{ test.questions|length }} {{ _('test_questions') }}</span>
             </div>
         </a>
         {% endfor %}
     </div>
     {% else %}
     <div class="card text-center">
-        <p style="color:var(--text-muted)">Hozircha testlar mavjud emas. Tez orada qo'shiladi.</p>
+        <p style="color:var(--text-muted)">{{ _('no_tests') }}</p>
     </div>
     {% endif %}
 </div>

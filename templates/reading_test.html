@@ -1,23 +1,128 @@
 {% extends "base.html" %}
-{% block title %}{{ test.title }} — IELTS Pro{% endblock %}
+{% block title %}{{ test.title }} — IELTS ZONE{% endblock %}
 {% block content %}
 <div class="exam-layout">
-    <div class="exam-main">
-        <h1 style="font-size:1.5rem;font-weight:600;margin-bottom:16px">{{ test.title }}</h1>
-        <div style="font-size:0.9375rem;line-height:1.7;color:var(--text-secondary)">
-            {{ test.content or 'Test content will be displayed here.' }}
+    <div class="exam-main anim-fade">
+        <h1 style="font-size:1.5rem;font-weight:600;margin-bottom:8px">{{ test.title }}</h1>
+        <div style="font-size:0.8125rem;color:var(--text-muted);margin-bottom:24px">
+            <span class="badge badge--{{ 'easy' if test.difficulty == 'easy' else 'medium' if test.difficulty == 'medium' else 'hard' }}">{{ test.difficulty }}</span>
+            <span style="margin-left:12px">{{ questions|length }} {{ _('test_questions') }}</span>
+        </div>
+
+        {% if test.passage %}
+        <div style="background:var(--bg);border-radius:12px;padding:24px;margin-bottom:24px;line-height:1.8;font-size:0.9375rem;color:var(--text-secondary)">
+            <div style="font-weight:600;font-size:0.8125rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px">Reading Passage</div>
+            {% for paragraph in test.passage.split('\n\n') %}
+            <p style="margin-bottom:16px">{{ paragraph }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form id="testForm">
+            {% for q in questions %}
+            <div class="card" style="margin-bottom:16px" data-qid="{{ q.id }}">
+                <div style="display:flex;align-items:flex-start;gap:12px">
+                    <span style="background:var(--accent-light);color:var(--accent);border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:0.8125rem;font-weight:600;flex-shrink:0">{{ loop.index }}</span>
+                    <div style="flex:1">
+                        <p style="font-weight:500;margin-bottom:10px;font-size:0.9375rem">{{ q.question_text }}</p>
+                        {% if q.options %}
+                        {% set options = q.options|fromjson %}
+                        <div class="question-options">
+                            {% for opt in options %}
+                            <label class="option-label">
+                                <input type="radio" name="q{{ q.id }}" value="{{ opt }}" class="option-input">
+                                <span class="option-text">{{ opt }}</span>
+                            </label>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <input type="text" name="q{{ q.id }}" class="option-input" placeholder="Your answer..." style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:0.875rem;font-family:inherit;outline:none">
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn--primary btn--lg" style="width:100%;margin-top:8px">{{ _('test_submit') }}</button>
+        </form>
+
+        <div id="resultsPanel" style="display:none;margin-top:24px">
+            <div class="card" style="text-align:center;padding:32px">
+                <div style="font-size:3rem;font-weight:700;color:var(--accent)" id="scoreDisplay">0</div>
+                <div style="font-size:1rem;color:var(--text-secondary);margin-top:4px" id="totalDisplay">/ 0</div>
+                <div id="detailsDisplay" style="margin-top:24px;text-align:left"></div>
+            </div>
         </div>
     </div>
+
     <div class="exam-sidebar">
         <div class="exam-timer">
             <div class="exam-timer__time" id="examTimer" data-minutes="60">01:00</div>
-            <div class="exam-timer__label">Time Remaining</div>
+            <div class="exam-timer__label">{{ _('test_timer') }}</div>
         </div>
-        <div class="card">
-            <div style="font-size:0.875rem;font-weight:500;margin-bottom:8px">Questions</div>
-            <div style="font-size:0.8125rem;color:var(--text-muted)">40 questions</div>
+        <div class="card" style="padding:16px">
+            <div style="font-size:0.875rem;font-weight:500;margin-bottom:12px">{{ _('test_questions')|capitalize }}</div>
+            <div id="questionNav" style="display:flex;flex-wrap:wrap;gap:6px">
+                {% for q in questions %}
+                <span class="q-nav-dot" data-qid="{{ q.id }}" style="width:32px;height:32px;border-radius:8px;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:500;color:var(--text-muted)">{{ loop.index }}</span>
+                {% endfor %}
+            </div>
         </div>
-        <button class="btn btn--primary btn--block mt-16" onclick="alert('Submit functionality coming soon')">Submit Test</button>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var form = document.getElementById('testForm');
+    if (!form) return;
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var data = new FormData(form);
+        var answers = {};
+        var testId = {{ test.id }};
+        for (var pair of data.entries()) {
+            var key = pair[0];
+            if (key.startsWith('q')) {
+                answers[key.substring(1)] = pair[1];
+            }
+        }
+        fetch('/api/check-answers', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({answers: answers, test_id: testId})
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(res) {
+            document.getElementById('scoreDisplay').textContent = res.score;
+            document.getElementById('totalDisplay').textContent = '/ ' + res.total;
+            var details = document.getElementById('detailsDisplay');
+            details.innerHTML = '<div style="font-weight:600;margin-bottom:12px;font-size:0.9375rem">Results:</div>';
+            res.results.forEach(function(r) {
+                var icon = r.correct ? '<span style="color:#15803d">✓</span>' : '<span style="color:#b91c1c">✗</span>';
+                var correctInfo = r.correct ? '' : '<div style="font-size:0.8125rem;color:var(--text-muted);margin-top:4px">Correct: ' + r.correct_answer + '</div>';
+                details.innerHTML += '<div style="padding:10px 0;border-bottom:1px solid var(--border);font-size:0.875rem">' + icon + ' ' + r.question_text + correctInfo + '</div>';
+            });
+            document.getElementById('resultsPanel').style.display = 'block';
+            form.querySelector('button[type="submit"]').style.display = 'none';
+            document.getElementById('resultsPanel').scrollIntoView({behavior:'smooth'});
+        });
+    });
+
+    // Question nav dots
+    document.querySelectorAll('.option-input').forEach(function(input) {
+        input.addEventListener('change', function() {
+            var card = this.closest('[data-qid]');
+            if (card) {
+                var qid = card.getAttribute('data-qid');
+                var dot = document.querySelector('.q-nav-dot[data-qid="' + qid + '"]');
+                if (dot) {
+                    dot.style.background = 'var(--accent)';
+                    dot.style.color = '#fff';
+                    dot.style.borderColor = 'var(--accent)';
+                }
+            }
+        });
+    });
+});
+</script>
 {% endblock %}
