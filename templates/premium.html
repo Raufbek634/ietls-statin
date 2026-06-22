@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Premium — IELTS ZONE{% endblock %}
+{% block content %}
+<div class="section anim-fade">
+    <div class="section__header text-center" style="max-width:600px;margin:0 auto 48px">
+        <span class="hero__tag" style="margin-bottom:16px">Premium imkoniyatlar</span>
+        <h1 style="font-size:2.25rem">IELTS ZONE <span style="background:linear-gradient(135deg,#f59e0b,#ef4444);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Premium</span></h1>
+        <p style="color:var(--text-secondary);margin-top:12px;font-size:1.0625rem">O'z imtihoningizni eng yaxshi natija bilan topshiring. Premium a'zolik bilan barcha imkoniyatlarni oching.</p>
+    </div>
+    <div class="plans-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;max-width:1000px;margin:0 auto">
+        <div class="plan-card anim-fade-up anim-delay-1">
+            <div class="plan-card__icon plan-card__icon--free">
+                <i data-lucide="heart" class="icon"></i>
+            </div>
+            <h3>Bepul</h3>
+            <div class="plan-card__price">0 <span>so'm/oy</span></div>
+            <ul class="plan-card__features">
+                <li><i data-lucide="check" class="icon check"></i> Reading testlari (4 ta)</li>
+                <li><i data-lucide="check" class="icon check"></i> Listening testlari</li>
+                <li><i data-lucide="check" class="icon check"></i> Writing tasks</li>
+                <li><i data-lucide="check" class="icon check"></i> Speaking savollari</li>
+                <li><i data-lucide="check" class="icon check"></i> Vocabulary 16+ so'z</li>
+                <li><i data-lucide="check" class="icon check"></i> CEFR levels (A1-C2)</li>
+                <li><i data-lucide="x" class="icon x"></i> Mock exam (to'liq)</li>
+                <li><i data-lucide="x" class="icon x"></i> Progress dashboard</li>
+                <li><i data-lucide="x" class="icon x"></i> AI Writing tekshirish</li>
+                <li><i data-lucide="x" class="icon x"></i> Telegram bot daily words</li>
+                <li><i data-lucide="x" class="icon x"></i> CEFR grammar exercises</li>
+            </ul>
+            {% if current_user.is_authenticated %}
+            <div class="btn btn--ghost btn--block" style="cursor:default;opacity:0.6">Joriy rejangiz</div>
+            {% else %}
+            <a href="/register" class="btn btn--primary btn--block">Bepul boshlash</a>
+            {% endif %}
+        </div>
+        <div class="plan-card plan-card--popular anim-fade-up anim-delay-2">
+            <div class="plan-card__popular-badge">Eng yaxshi</div>
+            <div class="plan-card__icon plan-card__icon--premium">
+                <i data-lucide="crown" class="icon"></i>
+            </div>
+            <h3>Premium</h3>
+            <div class="plan-card__price">50,000 <span>so'm/oy</span></div>
+            <ul class="plan-card__features">
+                <li><i data-lucide="check" class="icon check"></i> Barcha bepul imkoniyatlar</li>
+                <li><i data-lucide="check" class="icon check"></i> Mock exam (4 section)</li>
+                <li><i data-lucide="check" class="icon check"></i> Progress dashboard</li>
+                <li><i data-lucide="check" class="icon check"></i> AI Writing tekshirish</li>
+                <li><i data-lucide="check" class="icon check"></i> Telegram bot daily words</li>
+                <li><i data-lucide="check" class="icon check"></i> CEFR grammar exercises</li>
+                <li><i data-lucide="check" class="icon check"></i> Premium badge</li>
+                <li><i data-lucide="check" class="icon check"></i> 100+ qo'shimcha testlar</li>
+                <li><i data-lucide="check" class="icon check"></i> Natijalar tahlili</li>
+                <li><i data-lucide="check" class="icon check"></i> Leaderboardda ustunlik</li>
+            </ul>
+            {% if current_user.is_premium_active %}
+            <div class="btn btn--ghost btn--block" style="cursor:default;border-color:#f59e0b;color:#f59e0b">Faol</div>
+            {% else %}
+            <a href="{{ url_for('premium_checkout') }}" class="btn btn--premium btn--block">Premium olish</a>
+            {% endif %}
+        </div>
+        <div class="plan-card anim-fade-up anim-delay-3">
+            <div class="plan-card__icon" style="background:linear-gradient(135deg,#8b5cf6,#6366f1)">
+                <i data-lucide="gem" class="icon"></i>
+            </div>
+            <h3>Yillik Premium</h3>
+            <div class="plan-card__price">450,000 <span>so'm/yil</span></div>
+            <ul class="plan-card__features">
+                <li><i data-lucide="check" class="icon check"></i> Premiumdagi barcha narsa</li>
+                <li><i data-lucide="check" class="icon check"></i> 2 oy bepul (25% chegirma)</li>
+                <li><i data-lucide="check" class="icon check"></i> Priority support</li>
+                <li><i data-lucide="check" class="icon check"></i> Individual mentor</li>
+                <li><i data-lucide="check" class="icon check"></i> Maxsus materiallar</li>
+            </ul>
+            {% if current_user.is_premium_active %}
+            <div class="btn btn--ghost btn--block" style="cursor:default;border-color:#8b5cf6;color:#8b5cf6">Faol</div>
+            {% else %}
+            <a href="{{ url_for('premium_checkout') }}" class="btn btn--block" style="background:linear-gradient(135deg,#8b5cf6,#6366f1);color:#fff;border:none">Yillik paket</a>
+            {% endif %}
+        </div>
+    </div>
+    <div class="card mt-32 anim-fade-up anim-delay-4" style="max-width:700px;margin:32px auto 0;text-align:center">
+        <h3 style="font-size:1rem;font-weight:600;margin-bottom:12px">To'lov tizimi</h3>
+        <p style="font-size:0.875rem;color:var(--text-secondary);line-height:1.7">Click, Payme, yoki bank kartasi orqali to'lov qilishingiz mumkin. Premium aktivatsiya avtomatik tarzda amalga oshiriladi.</p>
+    </div>
+</div>
+{% endblock %}

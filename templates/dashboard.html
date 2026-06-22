@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — IELTS ZONE{% endblock %}
+{% block content %}
+<div class="section anim-fade">
+    <div class="section__header">
+        <h1>Dashboard</h1>
+        <p>Progress tracking va statistika</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:32px">
+        <div class="stat-card anim-fade-up anim-delay-1">
+            <div class="stat-card__icon" style="background:linear-gradient(135deg,#4f6ef7,#6366f1)"><i data-lucide="file-text" class="icon"></i></div>
+            <div class="stat-card__value">{{ results|length }}</div>
+            <div class="stat-card__label">Testlar ishlangan</div>
+        </div>
+        <div class="stat-card anim-fade-up anim-delay-2">
+            <div class="stat-card__icon" style="background:linear-gradient(135deg,#059669,#10b981)"><i data-lucide="award" class="icon"></i></div>
+            <div class="stat-card__value">{{ current_user.score or 0 }}</div>
+            <div class="stat-card__label">Umumiy ball</div>
+        </div>
+        <div class="stat-card anim-fade-up anim-delay-3">
+            <div class="stat-card__icon" style="background:linear-gradient(135deg,#d97706,#f59e0b)"><i data-lucide="trending-up" class="icon"></i></div>
+            <div class="stat-card__value">{{ "%.1f"|format((current_user.score or 0) / (results|length or 1)) }}</div>
+            <div class="stat-card__label">O'rtacha ball</div>
+        </div>
+        <div class="stat-card anim-fade-up anim-delay-4">
+            <div class="stat-card__icon" style="background:linear-gradient(135deg,#7c3aed,#a855f7)"><i data-lucide="crown" class="icon"></i></div>
+            <div class="stat-card__value"><span class="badge badge--premium">Premium</span></div>
+            <div class="stat-card__label">A'zolik turi</div>
+        </div>
+    </div>
+
+    <div class="card anim-fade-up anim-delay-3" style="margin-bottom:24px">
+        <h3 style="font-size:1rem;font-weight:600;margin-bottom:16px">Progress</h3>
+        <div style="display:flex;gap:16px;flex-wrap:wrap">
+            {% set types = ['reading','listening','writing','speaking','mock_exam'] %}
+            {% for t in types %}
+            {% set count = results|selectattr('test_type','equalto',t)|list|length %}
+            <div style="flex:1;min-width:120px;text-align:center;padding:16px;background:var(--bg);border-radius:12px">
+                <div style="font-size:1.5rem;font-weight:700;color:var(--accent)">{{ count }}</div>
+                <div style="font-size:0.75rem;color:var(--text-muted);text-transform:capitalize;margin-top:4px">{{ t.replace('_',' ') }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <h3 style="font-size:1rem;font-weight:600;margin-bottom:16px" class="anim-fade-up anim-delay-4">Oxirgi natijalar</h3>
+    {% if results %}
+    <div style="display:flex;flex-direction:column;gap:12px" class="anim-fade-up anim-delay-5">
+        {% for r in results[:10] %}
+        <div class="result-card">
+            <div class="result-card__info">
+                <h4>{{ r.test_title or r.test_type|capitalize }}</h4>
+                <p>{{ r.created_at.strftime('%d %b %Y, %H:%M') }}</p>
+            </div>
+            <div class="result-card__score">
+                {{ "%.0f"|format(r.score) }}/{{ "%.0f"|format(r.total) }}
+                <span>({{ "%.0f"|format(r.score/r.total*100) if r.total else 0 }}%)</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="card text-center">
+        <p style="color:var(--text-muted)">Hali test ishlamagansiz. <a href="/mock-exam">Mock exam</a> bilan boshlang!</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

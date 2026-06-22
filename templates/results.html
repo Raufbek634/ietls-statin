@@ -1,35 +1,29 @@
 {% extends "base.html" %}
 {% block title %}Results — IELTS ZONE{% endblock %}
 {% block content %}
-<div class="section">
+<div class="section anim-fade">
     <div class="section__header">
-        <h1>My Results</h1>
+        <h1>Natijalar</h1>
         <p>Barcha test natijalaringiz</p>
     </div>
     {% if results %}
-    <div class="table-wrap">
-        <table>
-            <thead>
-                <tr>
-                    <th>Test</th>
-                    <th>Score</th>
-                    <th>Date</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for r in results %}
-                <tr>
-                    <td>{{ r.test_type|capitalize }}</td>
-                    <td>{{ r.score }}/{{ r.total }}</td>
-                    <td>{{ r.created_at.strftime('%d %b %Y, %H:%M') }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div style="display:flex;flex-direction:column;gap:12px">
+        {% for r in results %}
+        <div class="result-card anim-fade-up" style="animation-delay:{{ loop.index * 0.05 }}s">
+            <div class="result-card__info">
+                <h4>{{ r.test_title or r.test_type|capitalize }}</h4>
+                <p>{{ r.created_at.strftime('%d %b %Y, %H:%M') }}</p>
+            </div>
+            <div class="result-card__score">
+                {{ "%.0f"|format(r.score) }}/{{ "%.0f"|format(r.total) }}
+                <span>({{ "%.0f"|format(r.score/r.total*100) if r.total else 0 }}%)</span>
+            </div>
+        </div>
+        {% endfor %}
     </div>
     {% else %}
     <div class="card text-center">
-        <p style="color:var(--text-muted)">Hali test ishlamagansiz. <a href="/reading">Boshlash</a></p>
+        <p style="color:var(--text-muted)">Hali test ishlamagansiz. <a href="/mock-exam">IELTS topshirish</a></p>
     </div>
     {% endif %}
 </div>

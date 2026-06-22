@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+{% block title %}Grammar {{ level|upper }} — IELTS ZONE{% endblock %}
+{% block content %}
+<div class="section anim-fade">
+    <div class="section__header">
+        <a href="/cefr/{{ level }}" style="font-size:0.875rem;color:var(--text-muted)">&larr; {{ level|upper }} {{ name }} sahifasiga qaytish</a>
+        <h1 style="margin-top:8px">Grammar — {{ level|upper }}</h1>
+        <p>{{ name }} darajasi uchun grammatika mashqlari</p>
+    </div>
+
+    {% set grammar_data = {
+        'a1': {
+            'title': 'Beginner Grammar',
+            'exercises': [
+                {'q': 'I ___ a student.', 'options': ['am','is','are'], 'answer': 'am'},
+                {'q': 'She ___ to school every day.', 'options': ['go','goes','going'], 'answer': 'goes'},
+                {'q': '___ you like coffee?', 'options': ['Does','Do','Is'], 'answer': 'Do'},
+                {'q': 'This ___ a book.', 'options': ['am','is','are'], 'answer': 'is'},
+                {'q': 'They ___ playing football now.', 'options': ['is','am','are'], 'answer': 'are'},
+                {'q': 'I ___ from Uzbekistan.', 'options': ['am','is','are'], 'answer': 'am'},
+                {'q': 'We ___ got a car.', 'options': ['has','have','are'], 'answer': 'have'},
+                {'q': 'The cat is ___ the table.', 'options': ['in','on','at'], 'answer': 'on'},
+                {'q': 'He ___ not like tea.', 'options': ['do','does','is'], 'answer': 'does'},
+                {'q': '___ is your name?', 'options': ['What','How','Where'], 'answer': 'What'},
+            ]
+        },
+        'a2': {
+            'title': 'Elementary Grammar',
+            'exercises': [
+                {'q': 'I ___ to the cinema yesterday.', 'options': ['go','went','gone'], 'answer': 'went'},
+                {'q': 'She is ___ than her sister.', 'options': ['tall','taller','tallest'], 'answer': 'taller'},
+                {'q': 'Have you ever ___ to London?', 'options': ['be','been','being'], 'answer': 'been'},
+                {'q': 'There ___ many people in the park.', 'options': ['is','are','was'], 'answer': 'are'},
+                {'q': 'I ___ breakfast at 7 am every day.', 'options': ['have','has','had'], 'answer': 'have'},
+                {'q': 'He ___ reading a book now.', 'options': ['is','am','are'], 'answer': 'is'},
+                {'q': 'We ___ not go to the party last night.', 'options': ['do','does','did'], 'answer': 'did'},
+                {'q': 'This is ___ most interesting book.', 'options': ['a','an','the'], 'answer': 'the'},
+                {'q': 'She can ___ English very well.', 'options': ['speaks','speaking','speak'], 'answer': 'speak'},
+                {'q': 'I ___ like to have a glass of water.', 'options': ['will','would','am'], 'answer': 'would'},
+            ]
+        },
+        'b1': {
+            'title': 'Intermediate Grammar',
+            'exercises': [
+                {'q': 'If it ___, we will stay at home.', 'options': ['rains','rained','will rain'], 'answer': 'rains'},
+                {'q': 'She has been studying English ___ 3 years.', 'options': ['since','for','during'], 'answer': 'for'},
+                {'q': 'The book ___ by a famous author.', 'options': ['wrote','was written','is writing'], 'answer': 'was written'},
+                {'q': 'I wish I ___ more time.', 'options': ['have','had','would have'], 'answer': 'had'},
+                {'q': 'He told me that he ___ coming.', 'options': ['is','was','will be'], 'answer': 'was'},
+                {'q': 'They ___ living here since 2010.', 'options': ['are','have been','were'], 'answer': 'have been'},
+                {'q': 'You should ___ more water.', 'options': ['drink','drinking','to drink'], 'answer': 'drink'},
+                {'q': '___ I open the window?', 'options': ['Must','Shall','Ought'], 'answer': 'Shall'},
+                {'q': 'The movie ___ already started when we arrived.', 'options': ['has','had','was'], 'answer': 'had'},
+                {'q': 'She is ___ to win the competition.', 'options': ['enough good','good enough','well enough'], 'answer': 'good enough'},
+            ]
+        },
+        'b2': {
+            'title': 'Upper Intermediate Grammar',
+            'exercises': [
+                {'q': 'By the time we arrive, they ___ dinner.', 'options': ['finish','will have finished','are finishing'], 'answer': 'will have finished'},
+                {'q': 'It ___ that the government will resign.', 'options': ['is believed','believes','is believing'], 'answer': 'is believed'},
+                {'q': 'I wish you ___ so loudly last night.', 'options': ['hadn\'t spoken','didn\'t speak','wouldn\'t speak'], 'answer': 'hadn\'t spoken'},
+                {'q': '___ the weather, we\'ll have a picnic.', 'options': ['Depending on','According to','Subject to'], 'answer': 'Depending on'},
+                {'q': 'She\'s the woman ___ helped me.', 'options': ['which','who','whom'], 'answer': 'who'},
+                {'q': 'I\'d rather you ___ told me earlier.', 'options': ['have','had','would have'], 'answer': 'had'},
+                {'q': 'Not only ___ late, but also forgot the documents.', 'options': ['he was','was he','he were'], 'answer': 'was he'},
+                {'q': 'The exam was ___ difficult that nobody passed.', 'options': ['such','so','too'], 'answer': 'so'},
+                {'q': '___ his illness, he completed the project.', 'options': ['Despite','Although','Even'], 'answer': 'Despite'},
+                {'q': 'I\'m not used ___ up so early.', 'options': ['to get','getting','to getting'], 'answer': 'to getting'},
+            ]
+        },
+        'c1': {
+            'title': 'Advanced Grammar',
+            'exercises': [
+                {'q': 'Had I known, I ___ differently.', 'options': ['would act','would have acted','acted'], 'answer': 'would have acted'},
+                {'q': 'It is imperative that every student ___ on time.', 'options': ['is','be','was'], 'answer': 'be'},
+                {'q': 'The proposal, ___ seems reasonable, requires approval.', 'options': ['which','that','what'], 'answer': 'which'},
+                {'q': '___ being exhausted, she continued working.', 'options': ['Despite of','In spite of','Although'], 'answer': 'In spite of'},
+                {'q': 'Seldom ___ such a remarkable performance.', 'options': ['we have seen','have we seen','we saw'], 'answer': 'have we seen'},
+                {'q': 'The results are ___ with our expectations.', 'options': ['consistent','consisting','consisted'], 'answer': 'consistent'},
+                {'q': 'He was ___ to be the best candidate.', 'options': ['regarded as','considered as','thought as'], 'answer': 'regarded as'},
+                {'q': '___ the issue, we need more data.', 'options': ['Clarify','To clarify','Clarifying'], 'answer': 'To clarify'},
+                {'q': 'The data ___ collected over three years.', 'options': ['was','were','is'], 'answer': 'were'},
+                {'q': 'Not a single error ___ found.', 'options': ['was','were','have been'], 'answer': 'was'},
+            ]
+        },
+        'c2': {
+            'title': 'Proficient Grammar',
+            'exercises': [
+                {'q': 'Were it not for her help, we ___ succeed.', 'options': ['wouldn\'t','wouldn\'t have','hadn\'t'], 'answer': 'wouldn\'t have'},
+                {'q': 'The phenomenon, ___ has been widely debated, remains unexplained.', 'options': ['that','which','what'], 'answer': 'which'},
+                {'q': '___ the complexities involved, the project was completed on time.', 'options': ['Notwithstanding','Despite of','Irregardless of'], 'answer': 'Notwithstanding'},
+                {'q': 'It is essential that the committee ___ its decision.', 'options': ['reconsiders','reconsider','reconsidered'], 'answer': 'reconsider'},
+                {'q': 'The more you practice, ___ you become.', 'options': ['the more fluent','the fluenter','more fluent'], 'answer': 'the more fluent'},
+                {'q': '___ its age, the building is in excellent condition.', 'options': ['Given that','Considering','In view of'], 'answer': 'Considering'},
+                {'q': 'He spoke with ___ authority on the subject.', 'options': ['such an','so much','such'], 'answer': 'such'},
+                {'q': 'The implications of the theory ___ far-reaching.', 'options': ['is','are','has been'], 'answer': 'are'},
+                {'q': '___ the evidence, the conclusion is unavoidable.', 'options': ['On the basis of','In the light of','With regards to'], 'answer': 'In the light of'},
+                {'q': 'Barely ___ the station when the train departed.', 'options': ['we reached','had we reached','we had reached'], 'answer': 'had we reached'},
+            ]
+        }
+    } %}
+
+    {% set g = grammar_data[level] %}
+    <div class="card anim-fade-up anim-delay-1" style="margin-bottom:24px">
+        <h2 style="font-size:1.125rem;font-weight:600;margin-bottom:16px">{{ g.title }}</h2>
+        <p style="font-size:0.875rem;color:var(--text-secondary);margin-bottom:20px">To'g'ri variantni tanlang. Har bir savol uchun 3 ta variant bor.</p>
+        <form id="grammarForm">
+            {% for ex in g.exercises %}
+            <div class="card" style="margin-bottom:12px;padding:16px;background:var(--bg);border:none" data-grammar-q="{{ loop.index0 }}">
+                <div style="display:flex;align-items:flex-start;gap:12px">
+                    <span style="background:var(--accent-light);color:var(--accent);border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:0.8125rem;font-weight:600;flex-shrink:0">{{ loop.index }}</span>
+                    <div style="flex:1">
+                        <p style="font-weight:500;margin-bottom:10px">{{ ex.q }}</p>
+                        <div class="question-options">
+                            {% for opt in ex.options %}
+                            <label class="option-label">
+                                <input type="radio" name="g{{ loop.index0 }}" value="{{ opt }}" class="option-input">
+                                <span class="option-text">{{ opt }}</span>
+                            </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn--primary btn--lg" style="width:100%;margin-top:8px">Tekshirish</button>
+        </form>
+
+        <div id="grammarResults" style="display:none;margin-top:20px">
+            <div class="card" style="text-align:center;padding:24px;background:var(--accent-light);border-color:var(--accent)">
+                <div style="font-size:2rem;font-weight:800;color:var(--accent)" id="grammarScore">0</div>
+                <div style="font-size:0.9375rem;color:var(--text-secondary);margin-top:4px">/<span id="grammarTotal">0</span> to'g'ri javob</div>
+                <div style="font-size:0.875rem;color:var(--text-muted);margin-top:4px" id="grammarPercent">0%</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card anim-fade-up anim-delay-2" style="text-align:center">
+        <h3 style="font-size:1rem;font-weight:600;margin-bottom:12px">{{ level|upper }} darajasi uchun tavsiyalar</h3>
+        <p style="font-size:0.875rem;color:var(--text-secondary);line-height:1.7">
+            {% if level == 'a1' %}
+            Asosiy fe'l zamonlarini (present simple, present continuous) o'rganing. "To be" fe'lini to'g'ri ishlatishni mashq qiling.
+            {% elif level == 'a2' %}
+            Past simple, present perfect, comparative adjectives ni o'rganing. Simple gap tuzilmalarini mustahkamlang.
+            {% elif level == 'b1' %}
+            Passive voice, conditionals (if clauses), relative clauses ni o'rganing. Mavzuli matnlar yozishni mashq qiling.
+            {% elif level == 'b2' %}
+            Mixed conditionals, reported speech, inversion ni o'rganing. Academic writing uslubiga o'ting.
+            {% elif level == 'c1' %}
+            Subjunctive mood, cleft sentences, hedging language ni o'rganing. Formal academic writing mashq qiling.
+            {% elif level == 'c2' %}
+            Nuancirovanniy grammar, stylistic inversion, ellipsis ni o'rganing. Murakkab akademik matnlar tahlil qiling.
+            {% endif %}
+        </p>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var form = document.getElementById('grammarForm');
+    if (!form) return;
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var data = new FormData(form);
+        var answers = {};
+        var correctMap = {};
+        {% for ex in g.exercises %}
+        correctMap['{{ loop.index0 }}'] = '{{ ex.answer }}';
+        {% endfor %}
+        for (var pair of data.entries()) {
+            if (pair[0].startsWith('g')) {
+                answers[pair[0].substring(1)] = pair[1];
+            }
+        }
+        var score = 0;
+        var total = Object.keys(correctMap).length;
+        for (var key in correctMap) {
+            if ((answers[key] || '').trim().toLowerCase() === correctMap[key].toLowerCase()) {
+                score++;
+            }
+        }
+        document.getElementById('grammarScore').textContent = score;
+        document.getElementById('grammarTotal').textContent = total;
+        document.getElementById('grammarPercent').textContent = Math.round(score/total*100) + '%';
+        document.getElementById('grammarResults').style.display = 'block';
+        document.getElementById('grammarResults').scrollIntoView({behavior:'smooth'});
+
+        // Mark correct/incorrect
+        document.querySelectorAll('[data-grammar-q]').forEach(function(div) {
+            var idx = div.getAttribute('data-grammar-q');
+            var selected = div.querySelector('input[type="radio"]:checked');
+            var correct = correctMap[idx];
+            div.querySelectorAll('.option-label').forEach(function(label) {
+                var input = label.querySelector('input');
+                if (input.value === correct) {
+                    label.style.borderColor = '#059669';
+                    label.style.background = '#ecfdf5';
+                } else if (input.checked && input.value !== correct) {
+                    label.style.borderColor = '#dc2626';
+                    label.style.background = '#fef2f2';
+                }
+                input.disabled = true;
+            });
+        });
+    });
+});
+</script>
+{% endblock %}

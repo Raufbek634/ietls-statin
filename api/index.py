@@ -3,7 +3,7 @@ import sys
 import json
 from datetime import datetime, timezone
 
-from flask import Flask, render_template, request, jsonify, redirect, url_for, flash
+from flask import Flask, render_template, request, jsonify, redirect, url_for, flash, session
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from sqlalchemy import text
 
@@ -128,7 +128,8 @@ def logout():
 @app.route('/profile')
 @login_required
 def profile():
-    return render_template('profile.html')
+    results_data = Result.query.filter_by(user_id=current_user.id).order_by(Result.created_at.desc()).limit(10).all()
+    return render_template('profile.html', results=results_data)
 
 
 @app.route('/reading')
@@ -214,7 +215,137 @@ def vocabulary():
 
 @app.route('/mock-exam')
 def mock_exam():
-    return render_template('mock_exam.html')
+    reading_tests = Test.query.filter_by(type='reading').all()
+    return render_template('mock_exam.html', reading_tests=reading_tests)
+
+
+@app.route('/mock-exam/start')
+@login_required
+def mock_exam_start():
+    session['mock_exam'] = {'section': 1, 'answers': {}}
+    reading = Test.query.filter(Test.type=='reading', Test.passage.isnot(None)).first()
+    writing = Test.query.filter_by(type='writing').order_by(Test.difficulty).first()
+    speaking = Test.query.filter_by(type='speaking').order_by(Test.difficulty).first()
+    if not reading:
+        flash('Hozircha mock exam uchun testlar mavjud emas')
+        return redirect(url_for('mock_exam'))
+    questions = Question.query.filter_by(test_id=reading.id).order_by(Question.order).all()
+    return render_template('mock_exam_start.html', reading=reading, questions=questions, writing=writing, speaking=speaking)
+
+
+@app.route('/mock-exam/submit', methods=['POST'])
+@login_required
+def mock_exam_submit():
+    data = request.get_json()
+    if not data:
+        return jsonify({'error': 'No data'}), 400
+    reading_answers = data.get('reading', {})
+    reading_id = data.get('reading_id')
+    total_score = 0
+    total_questions = 0
+    details = []
+    if reading_id:
+        questions = Question.query.filter_by(test_id=reading_id).order_by(Question.order).all()
+        for q in questions:
+            total_questions += 1
+            user_ans = reading_answers.get(str(q.id), '').strip()
+            correct = user_ans.lower() == q.correct_answer.strip().lower()
+            if correct:
+                total_score += 1
+            details.append({
+                'q': q.question_text[:60],
+                'correct': correct,
+                'user': user_ans,
+                'expected': q.correct_answer
+            })
+    result = Result(
+        user_id=current_user.id,
+        test_type='mock_exam',
+        test_title='IELTS Mock Exam',
+        score=total_score,
+        total=total_questions,
+        details=json.dumps(details)
+    )
+    db.session.add(result)
+    current_user.score = (current_user.score or 0) + total_score
+    db.session.commit()
+    return jsonify({'score': total_score, 'total': total_questions, 'percentage': round(total_score/total_questions*100,1) if total_questions else 0})
+
+
+@app.route('/premium')
+def premium():
+    return render_template('premium.html')
+
+
+@app.route('/api/premium/checkout')
+@login_required
+def premium_checkout():
+    return jsonify({
+        'status': 'ok',
+        'message': 'To\'lov tizimi ulanishi jarayonida. Premium: 50,000 so\'m/oy',
+        'redirect': url_for('premium_success')
+    })
+
+
+@app.route('/premium/success')
+@login_required
+def premium_success():
+    current_user.is_premium = True
+    from datetime import timedelta
+    current_user.premium_expiry = datetime.now(timezone.utc) + timedelta(days=30)
+    db.session.commit()
+    flash('Premium akkaunt faollashtirildi!')
+    return redirect(url_for('profile'))
+
+
+@app.route('/dashboard')
+@login_required
+def dashboard():
+    if not current_user.is_premium_active:
+        return redirect(url_for('premium'))
+    results = Result.query.filter_by(user_id=current_user.id).order_by(Result.created_at.desc()).all()
+    return render_template('dashboard.html', results=results)
+
+
+@app.route('/cefr/<level>/grammar')
+def cefr_grammar(level):
+    level = level.lower()
+    if level not in _cefr_levels:
+        return redirect(url_for('cefr'))
+    return render_template('cefr_grammar.html', level=level, name=_cefr_levels[level])
+
+
+@app.route('/api/cefr/grammar-check', methods=['POST'])
+def cefr_grammar_check():
+    data = request.get_json()
+    if not data:
+        return jsonify({'error': 'No data'}), 400
+    answers = data.get('answers', {})
+    correct_map = data.get('correct_map', {})
+    score = 0
+    total = len(correct_map)
+    for qid, correct in correct_map.items():
+        if answers.get(qid, '').strip().lower() == correct.strip().lower():
+            score += 1
+    return jsonify({'score': score, 'total': total, 'percentage': round(score/total*100,1) if total else 0})
+
+
+@app.route('/api/ai-evaluate', methods=['POST'])
+@login_required
+def ai_evaluate():
+    if not current_user.is_premium_active:
+        return jsonify({'error': 'Premium talab qilinadi'}), 403
+    data = request.get_json()
+    text = (data or {}).get('text', '')
+    if not text:
+        return jsonify({'error': 'Matn kiritilmagan'}), 400
+    word_count = len(text.split())
+    return jsonify({
+        'score': round(min(word_count / 10, 9), 1),
+        'word_count': word_count,
+        'feedback': 'Yaxshi yozilgan! Grammar va vocabulary ni yaxshilash mumkin.',
+        'band': '6.5'
+    })
 
 
 @app.route('/results')
@@ -262,6 +393,7 @@ def submit_result():
     result = Result(
         user_id=current_user.id,
         test_type=data.get('test_type', 'unknown'),
+        test_title=data.get('test_title', ''),
         score=data.get('score', 0),
         total=data.get('total', 0),
         details=data.get('details', '')
@@ -284,6 +416,52 @@ def random_vocabulary():
             'category': word.category
         })
     return jsonify({'error': 'No words found'}), 404
+
+
+@app.route('/api/telegram/auth', methods=['POST'])
+def telegram_auth():
+    """Telegram bot sends phone number and telegram_id here to link accounts"""
+    data = request.get_json()
+    if not data:
+        return jsonify({'status': 'error', 'message': 'No data'}), 400
+    telegram_id = str(data.get('telegram_id', ''))
+    phone = data.get('phone', '')
+    username = data.get('username', '')
+    if not telegram_id:
+        return jsonify({'status': 'error', 'message': 'telegram_id required'}), 400
+    user = User.query.filter_by(telegram_id=telegram_id).first()
+    if not user and phone:
+        user = User.query.filter_by(phone=phone).first()
+    if not user:
+        if not username:
+            return jsonify({'status': 'error', 'message': 'No user found. Register first.'}), 404
+        user = User.query.filter_by(username=username).first()
+        if not user:
+            return jsonify({'status': 'error', 'message': 'User not found'}), 404
+    user.telegram_id = telegram_id
+    if phone:
+        user.phone = phone
+    db.session.commit()
+    return jsonify({
+        'status': 'ok',
+        'username': user.username,
+        'score': user.score or 0,
+        'is_premium': user.is_premium
+    })
+
+
+@app.route('/api/telegram/daily-word')
+def telegram_daily_word():
+    word = Vocabulary.query.order_by(db.func.random()).first()
+    if not word:
+        return jsonify({'error': 'No words'}), 404
+    return jsonify({
+        'word': word.word,
+        'translation': word.translation,
+        'definition': word.definition,
+        'example': word.example,
+        'category': word.category
+    })
 
 
 @app.route('/api/leaderboard')

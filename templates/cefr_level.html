@@ -8,11 +8,11 @@
         <p>{{ name }}</p>
     </div>
     <div class="grid">
-        <div class="card anim-fade-up anim-delay-1" onclick="alert('Coming soon')" style="cursor:pointer">
+        <a href="/cefr/{{ level }}/grammar" class="card anim-fade-up anim-delay-1" style="cursor:pointer;display:block;text-decoration:none;color:inherit">
             <div class="feature-card__icon" style="margin-bottom:12px"><i data-lucide="book" class="icon" style="width:22px;height:22px;stroke:var(--accent);stroke-width:2"></i></div>
             <div class="card__title">Grammar</div>
-            <div class="card__desc">{{ level|upper }} darajasidagi grammatika</div>
-        </div>
+            <div class="card__desc">{{ level|upper }} darajasidagi grammatika mashqlari</div>
+        </a>
         <div class="card anim-fade-up anim-delay-2" onclick="alert('Coming soon')" style="cursor:pointer">
             <div class="feature-card__icon" style="margin-bottom:12px"><i data-lucide="book-open" class="icon" style="width:22px;height:22px;stroke:var(--accent);stroke-width:2"></i></div>
             <div class="card__title">{{ _('reading') }}</div>

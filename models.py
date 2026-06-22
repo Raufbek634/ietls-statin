@@ -1,7 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 db = SQLAlchemy()
 
@@ -13,7 +13,10 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(256), nullable=False)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     is_premium = db.Column(db.Boolean, default=False)
+    premium_expiry = db.Column(db.DateTime, nullable=True)
     score = db.Column(db.Integer, default=0)
+    phone = db.Column(db.String(20), nullable=True, unique=True)
+    telegram_id = db.Column(db.String(50), nullable=True, unique=True)
 
     results = db.relationship('Result', backref='user', lazy=True, cascade='all, delete-orphan')
 
@@ -23,11 +26,20 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    @property
+    def is_premium_active(self):
+        if not self.is_premium:
+            return False
+        if self.premium_expiry and self.premium_expiry < datetime.now(timezone.utc):
+            return False
+        return True
+
 
 class Result(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     test_type = db.Column(db.String(20), nullable=False)
+    test_title = db.Column(db.String(200), nullable=True)
     score = db.Column(db.Float, nullable=False)
     total = db.Column(db.Float, nullable=False)
     details = db.Column(db.Text, nullable=True)
@@ -42,6 +54,7 @@ class Test(db.Model):
     content = db.Column(db.Text, nullable=True)
     difficulty = db.Column(db.String(20), default='medium')
     passage = db.Column(db.Text, nullable=True)
+    is_premium = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
     questions = db.relationship('Question', backref='test', lazy=True, cascade='all, delete-orphan',

@@ -1,20 +1,20 @@
 {% extends "base.html" %}
-{% block title %}Login — IELTS ZONE{% endblock %}
+{% block title %}{{ _('login_title') }} — IELTS ZONE{% endblock %}
 {% block content %}
 <div class="section">
     <form class="form" method="POST">
-        <h2>Login</h2>
+        <h2>{{ _('login_title') }}</h2>
         <div class="form-group">
-            <label for="username">Username</label>
+            <label for="username">{{ _('username') }}</label>
             <input type="text" id="username" name="username" required autocomplete="username">
         </div>
         <div class="form-group">
-            <label for="password">Password</label>
+            <label for="password">{{ _('password') }}</label>
             <input type="password" id="password" name="password" required autocomplete="current-password">
         </div>
-        <button type="submit" class="btn btn--primary btn--block">Login</button>
+        <button type="submit" class="btn btn--primary btn--block">{{ _('login_btn') }}</button>
         <div class="form__footer">
-            Don't have an account? <a href="/register">Register</a>
+            {{ _('login_no_account') }} <a href="/register">{{ _('register_btn') }}</a>
         </div>
     </form>
 </div>
