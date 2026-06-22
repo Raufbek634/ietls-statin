@@ -312,8 +312,14 @@ img {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.25rem;
     margin-bottom: 16px;
+}
+
+.feature-card__icon .icon {
+    width: 22px;
+    height: 22px;
+    stroke: var(--accent);
+    stroke-width: 2;
 }
 
 .feature-card h3 {
@@ -709,7 +715,9 @@ tr:hover td {
         padding: 16px 24px;
         flex-direction: column;
         align-items: stretch;
-        gap: 12px;
+        gap: 8px;
+        max-height: calc(100vh - 64px);
+        overflow-y: auto;
     }
 
     .nav__menu.open {
@@ -718,17 +726,19 @@ tr:hover td {
 
     .nav__links {
         flex-direction: column;
-        gap: 4px;
+        gap: 2px;
     }
 
     .nav__link {
         display: block;
-        padding: 10px 12px;
+        padding: 12px 12px;
     }
 
     .nav__auth {
         flex-direction: column;
         gap: 8px;
+        padding-top: 8px;
+        border-top: 1px solid var(--border);
     }
 
     .nav__auth .btn {
@@ -736,29 +746,103 @@ tr:hover td {
         text-align: center;
     }
 
+    .hero {
+        padding: 48px 20px 40px;
+    }
+
     .hero h1 {
-        font-size: 2rem;
+        font-size: 1.75rem;
     }
 
     .hero p {
-        font-size: 1rem;
+        font-size: 0.9375rem;
     }
 
-    .hero {
-        padding: 60px 24px 48px;
+    .hero__actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .hero__actions .btn {
+        width: 100%;
     }
 
     .stats {
         flex-direction: column;
         gap: 24px;
+        padding: 32px 20px;
+    }
+
+    .features {
+        padding: 40px 20px;
+    }
+
+    .features h2 {
+        font-size: 1.375rem;
+        margin-bottom: 32px;
+    }
+
+    .features__grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .section {
+        padding: 32px 20px;
+    }
+
+    .section__header h1 {
+        font-size: 1.375rem;
+    }
+
+    .grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
     }
 
     .exam-layout {
         grid-template-columns: 1fr;
+        padding: 16px;
     }
 
     .exam-sidebar {
         position: static;
+    }
+
+    .exam-main {
+        padding: 20px;
+    }
+
+    .form {
+        margin: 0 12px;
+        padding: 24px 20px;
+    }
+
+    .footer__inner {
+        padding: 32px 20px 20px;
+    }
+
+    .footer__cols {
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero h1 {
+        font-size: 1.5rem;
+    }
+
+    .stat__number {
+        font-size: 1.625rem;
+    }
+
+    .footer__cols {
+        grid-template-columns: 1fr;
+    }
+
+    .footer__col {
+        text-align: center;
     }
 }
 

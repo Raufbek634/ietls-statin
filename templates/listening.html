@@ -14,7 +14,7 @@
             <div class="card__desc">{{ test.description or 'Listening test' }}</div>
             <div class="card__meta">
                 <span class="badge badge--{{ 'easy' if test.difficulty == 'easy' else 'medium' if test.difficulty == 'medium' else 'hard' }}">{{ test.difficulty }}</span>
-                <span>🎧 Audio</span>
+                <span><i data-lucide="headphones" style="width:14px;height:14px;vertical-align:middle;margin-right:4px"></i> Audio</span>
             </div>
         </a>
         {% endfor %}
