@@ -11,3 +11,5 @@ build/
 .DS_Store
 *.pyo
 __pypackages__/
+
+.vercel

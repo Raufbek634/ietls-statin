@@ -16,6 +16,7 @@ app = Flask(
     static_folder=os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static')
 )
 app.config.from_object(Config)
+app.config['SQLALCHEMY_DATABASE_URI'] = Config.get_database_uri()
 
 db.init_app(app)
 login_manager = LoginManager(app)
