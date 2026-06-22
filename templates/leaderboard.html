@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Leaderboard — IELTS Pro{% endblock %}
+{% block content %}
+<div class="section">
+    <div class="section__header">
+        <h1>Leaderboard</h1>
+        <p>Eng yaxshi natijalar</p>
+    </div>
+    {% if top_users %}
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>User</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in top_users %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>
+                        {{ user.username }}
+                        {% if user.is_premium %}
+                        <span class="badge badge--premium">PREMIUM</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ user.score or 0 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="card text-center">
+        <p style="color:var(--text-muted)">Hali reyting mavjud emas.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

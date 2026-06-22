@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Vocabulary — IELTS Pro{% endblock %}
+{% block content %}
+<div class="section">
+    <div class="section__header">
+        <h1>Vocabulary</h1>
+        <p>IELTS lug'ati, kategoriyalar bo'yicha</p>
+    </div>
+
+    {% if categories %}
+    <div class="vocab-filter">
+        <button class="active" data-category="">All</button>
+        {% for cat in categories %}
+        <button data-category="{{ cat }}">{{ cat }}</button>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if words %}
+    <div class="grid">
+        {% for word in words %}
+        <div class="card vocab-item" data-category="{{ word.category or '' }}">
+            <div class="vocab-word">{{ word.word }}</div>
+            <div class="vocab-translation">{{ word.translation }}</div>
+            {% if word.definition %}
+            <div class="vocab-definition">{{ word.definition }}</div>
+            {% endif %}
+            {% if word.example %}
+            <div class="vocab-example">"{{ word.example }}"</div>
+            {% endif %}
+            {% if word.category %}
+            <div style="margin-top:12px">
+                <span class="badge badge--medium">{{ word.category }}</span>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="card text-center">
+        <p style="color:var(--text-muted)">Hozircha so'zlar mavjud emas. Tez orada qo'shiladi.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

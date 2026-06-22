@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Register — IELTS Pro{% endblock %}
+{% block content %}
+<div class="section">
+    <form class="form" method="POST">
+        <h2>Register</h2>
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required autocomplete="username">
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required autocomplete="email">
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required autocomplete="new-password">
+        </div>
+        <button type="submit" class="btn btn--primary btn--block">Register</button>
+        <div class="form__footer">
+            Already have an account? <a href="/login">Login</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

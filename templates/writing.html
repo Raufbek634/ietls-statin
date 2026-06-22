@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Writing — IELTS Pro{% endblock %}
+{% block content %}
+<div class="section">
+    <div class="section__header">
+        <h1>Writing</h1>
+        <p>Task 1 va Task 2 mavzulari</p>
+    </div>
+    {% if topics %}
+    <div class="grid">
+        {% for topic in topics %}
+        <div class="card">
+            <div class="card__title">{{ topic.title }}</div>
+            <div class="card__desc">{{ topic.description or 'Writing task' }}</div>
+            <div class="card__meta">
+                <span class="badge badge--{{ 'easy' if topic.difficulty == 'easy' else 'medium' if topic.difficulty == 'medium' else 'hard' }}">{{ topic.difficulty }}</span>
+            </div>
+            <button class="btn btn--ghost btn--sm mt-16" onclick="alert('Writing editor coming soon')">Start Writing</button>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="card text-center">
+        <p style="color:var(--text-muted)">Hozircha mavzular mavjud emas. Tez orada qo'shiladi.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Listening — IELTS Pro{% endblock %}
+{% block content %}
+<div class="section">
+    <div class="section__header">
+        <h1>Listening</h1>
+        <p>Audio bilan real Listening testlari</p>
+    </div>
+    {% if tests %}
+    <div class="grid">
+        {% for test in tests %}
+        <a href="/listening/{{ test.id }}" class="card card--clickable" style="display:block">
+            <div class="card__title">{{ test.title }}</div>
+            <div class="card__desc">{{ test.description or 'Listening test' }}</div>
+            <div class="card__meta">
+                <span class="badge badge--{{ 'easy' if test.difficulty == 'easy' else 'medium' if test.difficulty == 'medium' else 'hard' }}">{{ test.difficulty }}</span>
+                <span>🎧 Audio</span>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="card text-center">
+        <p style="color:var(--text-muted)">Hozircha testlar mavjud emas. Tez orada qo'shiladi.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

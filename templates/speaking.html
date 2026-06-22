@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Speaking — IELTS Pro{% endblock %}
+{% block content %}
+<div class="section">
+    <div class="section__header">
+        <h1>Speaking</h1>
+        <p>Part 1, 2, 3 savollari va namuna javoblar</p>
+    </div>
+    {% if questions %}
+    <div class="grid">
+        {% for q in questions %}
+        <div class="card">
+            <div class="card__title">{{ q.title }}</div>
+            <div class="card__desc">{{ q.description or 'Speaking question' }}</div>
+            <div class="card__meta">
+                <span class="badge badge--{{ 'easy' if q.difficulty == 'easy' else 'medium' if q.difficulty == 'medium' else 'hard' }}">{{ q.difficulty }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="card text-center">
+        <p style="color:var(--text-muted)">Hozircha savollar mavjud emas. Tez orada qo'shiladi.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}{{ test.title }} — IELTS Pro{% endblock %}
+{% block content %}
+<div class="exam-layout">
+    <div class="exam-main">
+        <h1 style="font-size:1.5rem;font-weight:600;margin-bottom:16px">{{ test.title }}</h1>
+        <div style="font-size:0.9375rem;line-height:1.7;color:var(--text-secondary)">
+            {{ test.content or 'Test content will be displayed here.' }}
+        </div>
+    </div>
+    <div class="exam-sidebar">
+        <div class="exam-timer">
+            <div class="exam-timer__time" id="examTimer" data-minutes="60">01:00</div>
+            <div class="exam-timer__label">Time Remaining</div>
+        </div>
+        <div class="card">
+            <div style="font-size:0.875rem;font-weight:500;margin-bottom:8px">Questions</div>
+            <div style="font-size:0.8125rem;color:var(--text-muted)">40 questions</div>
+        </div>
+        <button class="btn btn--primary btn--block mt-16" onclick="alert('Submit functionality coming soon')">Submit Test</button>
+    </div>
+</div>
+{% endblock %}

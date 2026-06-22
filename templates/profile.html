@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Profile — IELTS Pro{% endblock %}
+{% block content %}
+<div class="section">
+    <div class="section__header">
+        <h1>Profile</h1>
+        <p>{{ current_user.username }}</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px">
+        <div class="card">
+            <div class="stat" style="text-align:left;padding:0">
+                <div class="stat__number">{{ current_user.score or 0 }}</div>
+                <div class="stat__label">Total Score</div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="stat" style="text-align:left;padding:0">
+                <div class="stat__number">{{ current_user.results|length }}</div>
+                <div class="stat__label">Tests Taken</div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="stat" style="text-align:left;padding:0">
+                {% if current_user.is_premium %}
+                <div class="badge badge--premium">Premium</div>
+                {% else %}
+                <div class="stat__label">Free Account</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

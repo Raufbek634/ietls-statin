@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Results — IELTS Pro{% endblock %}
+{% block content %}
+<div class="section">
+    <div class="section__header">
+        <h1>My Results</h1>
+        <p>Barcha test natijalaringiz</p>
+    </div>
+    {% if results %}
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Test</th>
+                    <th>Score</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in results %}
+                <tr>
+                    <td>{{ r.test_type|capitalize }}</td>
+                    <td>{{ r.score }}/{{ r.total }}</td>
+                    <td>{{ r.created_at.strftime('%d %b %Y, %H:%M') }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="card text-center">
+        <p style="color:var(--text-muted)">Hali test ishlamagansiz. <a href="/reading">Boshlash</a></p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
