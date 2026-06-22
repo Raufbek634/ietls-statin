@@ -1,30 +1,42 @@
 {% extends "base.html" %}
 {% block title %}Mock Exam — IELTS ZONE{% endblock %}
 {% block content %}
-<div class="section">
+<div class="section anim-fade">
     <div class="section__header">
         <h1>Mock Exam</h1>
         <p>To'liq IELTS imtihoni — Reading, Listening, Writing, Speaking</p>
     </div>
     <div class="grid">
-        <div class="card">
-            <div class="card__title">Academic Mock Exam</div>
-            <div class="card__desc">To'liq Academic IELTS imtihoni. 2 soat 45 daqiqa</div>
+        <div class="card anim-fade-up anim-delay-1">
+            <div class="card__title">IELTS Mock Exam</div>
+            <div class="card__desc">To'liq IELTS imtihoni. Reading, Listening, Writing, Speaking. 2 soat 45 daqiqa. Auto-grading bilan.</div>
             <div class="card__meta">
                 <span>4 sections</span>
                 <span>2h 45min</span>
+                <span class="badge badge--free">Bepul</span>
             </div>
-            <button class="btn btn--primary btn--sm mt-16" onclick="alert('Mock exam coming soon')">Start Exam</button>
+            <a href="/mock-exam/start" class="btn btn--primary btn--sm mt-16">IELTS topshirish</a>
         </div>
-        <div class="card">
-            <div class="card__title">General Training Mock Exam</div>
-            <div class="card__desc">To'liq General Training IELTS imtihoni</div>
+        <div class="card anim-fade-up anim-delay-2">
+            <div class="card__title">Premium Mock Exam</div>
+            <div class="card__desc">Qo'shimcha 20+ reading test, full listening section, AI writing evaluation bilan</div>
             <div class="card__meta">
-                <span>4 sections</span>
+                <span>4+ sections</span>
                 <span>2h 45min</span>
+                <span class="badge badge--premium">Premium</span>
             </div>
-            <button class="btn btn--primary btn--sm mt-16" onclick="alert('Mock exam coming soon')">Start Exam</button>
+            <a href="/premium" class="btn btn--premium btn--sm mt-16">Premium olish</a>
         </div>
     </div>
+    {% if reading_tests %}
+    <div class="card mt-32 anim-fade-up anim-delay-3">
+        <h3 style="font-size:1rem;font-weight:600;margin-bottom:12px">Mavjud reading testlar</h3>
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+            {% for t in reading_tests %}
+            <a href="/reading/{{ t.id }}" class="btn btn--sm" style="text-decoration:none">{{ t.title }}</a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}
