@@ -24,13 +24,16 @@ def seed_data():
         db.session.commit()
         print("Vocabulary seeded")
 
-    if not Test.query.filter_by(type='reading').first():
-        _seed_reading_tests()
-        _seed_listening_tests()
-        _seed_writing_tests()
-        _seed_speaking_tests()
-        db.session.commit()
-        print("All tests seeded")
+    # Always refresh test data (clear old, add fresh with passages and questions)
+    Question.query.delete()
+    Test.query.delete()
+    db.session.commit()
+    _seed_reading_tests()
+    _seed_listening_tests()
+    _seed_writing_tests()
+    _seed_speaking_tests()
+    db.session.commit()
+    print("All tests seeded")
 
 
 def _seed_reading_tests():

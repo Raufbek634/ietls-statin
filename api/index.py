@@ -45,7 +45,7 @@ with app.app_context():
         db.session.commit()
     except:
         db.session.rollback()
-    if not Vocabulary.query.first():
+    if not Test.query.filter(Test.passage.isnot(None)).first():
         import seed
         seed.seed_data()
 
