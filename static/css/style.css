@@ -5,9 +5,9 @@
     --text-secondary: #6e6e73;
     --text-muted: #a1a1a6;
     --border: #e5e5ea;
-    --accent: #0071e3;
+    --accent: #007fff;
     --accent-hover: #0066cc;
-    --accent-light: #e8f0fe;
+    --accent-light: #e6f2ff;
     --accent-gradient: linear-gradient(135deg, #0071e3, #5856d6);
     --premium-gradient: linear-gradient(135deg, #ff9500, #ff3b30);
     --success: #34c759;
@@ -329,14 +329,12 @@ img {
 .btn--primary {
     background: var(--accent);
     color: #fff;
-    border-color: transparent;
+    border: none;
 }
 
 .btn--primary:hover {
     background: var(--accent-hover);
-    border-color: transparent;
     color: #fff;
-    box-shadow: 0 4px 16px rgba(0, 113, 227, 0.3);
 }
 
 .btn--premium {
