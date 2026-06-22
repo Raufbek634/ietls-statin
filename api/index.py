@@ -30,6 +30,36 @@ def load_user(user_id):
 
 with app.app_context():
     db.create_all()
+    if not Vocabulary.query.first():
+        _words = [
+            ("analyze","tahlil qilmoq","To examine in detail","The data was analyzed carefully.","Academic"),
+            ("significant","ahamiyatli","Important or notable","A significant increase was observed.","Academic"),
+            ("consequently","natijada","As a result","The weather was bad; consequently, the event was canceled.","Linking"),
+            ("demonstrate","ko'rsatmoq","To show clearly","The experiment demonstrates the theory.","Academic"),
+            ("environment","atrof-muhit","The surroundings or conditions","We must protect the environment.","Environment"),
+            ("global","global, jahon","Relating to the whole world","Global warming is a serious issue.","Environment"),
+            ("tradition","an'ana","A long-established custom","This tradition dates back centuries.","Culture"),
+            ("diverse","xilma-xil","Showing variety","The city has a diverse population.","Culture"),
+            ("economy","iqtisodiyot","The state of trade and money","The economy is growing steadily.","Economics"),
+            ("investment","investitsiya","Putting money into something","Education is a good investment.","Economics"),
+            ("technology","texnologiya","Application of scientific knowledge","Technology is advancing rapidly.","Technology"),
+            ("innovation","yangilik","A new method or product","Innovation drives progress.","Technology"),
+            ("benefit","foyda","An advantage or profit","Regular exercise has many benefits.","Health"),
+            ("nutrition","ovqatlanish","The process of providing food","Good nutrition is essential.","Health"),
+            ("urban","shahar","Relating to a city","Urban areas are growing fast.","Geography"),
+            ("rural","qishloq","Relating to the countryside","Rural communities rely on farming.","Geography"),
+        ]
+        for w,t,d,e,c in _words:
+            db.session.add(Vocabulary(word=w,translation=t,definition=d,example=e,category=c))
+        for title,desc,diff in [("The History of the Internet","Academic reading passage","hard"),("Climate Change Effects","Academic passage about climate","medium")]:
+            db.session.add(Test(type='reading',title=title,description=desc,difficulty=diff))
+        for title,desc,diff in [("Conversation: University Registration","Listening Part 1","easy"),("Lecture: Marine Biology","Listening Part 4","hard")]:
+            db.session.add(Test(type='listening',title=title,description=desc,difficulty=diff))
+        for title,desc,diff in [("Task 1: Chart Description","Describe a chart about energy","medium"),("Task 2: Education","Should university be free? Discuss.","medium")]:
+            db.session.add(Test(type='writing',title=title,description=desc,difficulty=diff))
+        for title,desc,diff in [("Part 1: Work/Study","Do you work or study?","easy"),("Part 2: Describe a Place","Describe a place you visited.","medium"),("Part 3: Technology","How has technology changed communication?","hard")]:
+            db.session.add(Test(type='speaking',title=title,description=desc,difficulty=diff))
+        db.session.commit()
 
 
 @app.route('/')

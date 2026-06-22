@@ -11,6 +11,7 @@ class Config:
     def get_database_uri():
         uri = os.environ.get('DATABASE_URL')
         if uri:
+            uri = uri.replace('postgres://', 'postgresql://')
             return uri
         if os.environ.get('VERCEL'):
             return 'sqlite:////tmp/ielts.db'
