@@ -41,10 +41,13 @@ def load_user(user_id):
 with app.app_context():
     db.create_all()
     try:
-        db.session.execute(db.text('ALTER TABLE test ADD COLUMN passage TEXT'))
+        db.session.execute(text('ALTER TABLE test ADD COLUMN passage TEXT'))
         db.session.commit()
     except:
         db.session.rollback()
+    if not Vocabulary.query.first():
+        import seed
+        seed.seed_data()
 
 
 _translations = {}
