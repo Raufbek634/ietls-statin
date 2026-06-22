@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 
 from flask import Flask, render_template, request, jsonify, redirect, url_for, flash, session
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
-from sqlalchemy import text
+from sqlalchemy import text, inspect as sa_inspect
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -40,11 +40,27 @@ def load_user(user_id):
 
 with app.app_context():
     db.create_all()
-    try:
-        db.session.execute(text('ALTER TABLE test ADD COLUMN passage TEXT'))
-        db.session.commit()
-    except:
-        db.session.rollback()
+    inspector = sa_inspect(db.engine)
+    tables = inspector.get_table_names()
+    for table, cols in [
+        ('test', ['passage', 'is_premium']),
+        ('user', ['premium_expiry', 'phone', 'telegram_id']),
+        ('result', ['test_title']),
+    ]:
+        if table not in tables:
+            continue
+        existing = [c['name'] for c in inspector.get_columns(table)]
+        for col in cols:
+            if col not in existing:
+                try:
+                    quoted = f'"{table}"'
+                    col_type = {'passage': 'TEXT', 'is_premium': 'BOOLEAN DEFAULT FALSE',
+                                'premium_expiry': 'TIMESTAMP', 'phone': 'VARCHAR(20)',
+                                'telegram_id': 'VARCHAR(50)', 'test_title': 'VARCHAR(200)'}[col]
+                    db.session.execute(text(f'ALTER TABLE {quoted} ADD COLUMN {col} {col_type}'))
+                    db.session.commit()
+                except:
+                    db.session.rollback()
     if not Test.query.filter(Test.passage.isnot(None)).first():
         import seed
         seed.seed_data()
