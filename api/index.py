@@ -180,6 +180,29 @@ def leaderboard():
     return render_template('leaderboard.html', top_users=top_users)
 
 
+_cefr_levels = {
+    'a1': 'Beginner',
+    'a2': 'Elementary',
+    'b1': 'Intermediate',
+    'b2': 'Upper Intermediate',
+    'c1': 'Advanced',
+    'c2': 'Proficient',
+}
+
+
+@app.route('/cefr')
+def cefr():
+    return render_template('cefr.html')
+
+
+@app.route('/cefr/<level>')
+def cefr_level(level):
+    level = level.lower()
+    if level not in _cefr_levels:
+        return redirect(url_for('cefr'))
+    return render_template('cefr_level.html', level=level, name=_cefr_levels[level])
+
+
 @app.route('/api/submit-result', methods=['POST'])
 @login_required
 def submit_result():

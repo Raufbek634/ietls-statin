@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}IELTS Pro{% endblock %}</title>
+    <title>{% block title %}IELTS ZONE{% endblock %}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -13,18 +13,34 @@
 <body>
     <nav class="nav">
         <div class="nav__inner">
-            <a href="/" class="nav__logo">IELTS<span>Pro</span></a>
+            <a href="/" class="nav__logo">IELTS<span>ZONE</span></a>
             <button class="nav__toggle" id="navToggle" aria-label="Menu">
                 <span></span><span></span><span></span>
             </button>
             <div class="nav__menu" id="navMenu">
                 <div class="nav__links">
-                    <a href="/reading" class="nav__link">Reading</a>
-                    <a href="/listening" class="nav__link">Listening</a>
-                    <a href="/writing" class="nav__link">Writing</a>
-                    <a href="/speaking" class="nav__link">Speaking</a>
-                    <a href="/vocabulary" class="nav__link">Vocab</a>
-                    <a href="/mock-exam" class="nav__link">Mock Exam</a>
+                    <div class="nav__dropdown" id="ieltsDropdown">
+                        <button class="nav__link nav__dropdown-trigger">IELTS</button>
+                        <div class="nav__dropdown-menu">
+                            <a href="/reading">Reading</a>
+                            <a href="/listening">Listening</a>
+                            <a href="/writing">Writing</a>
+                            <a href="/speaking">Speaking</a>
+                            <a href="/vocabulary">Vocabulary</a>
+                            <a href="/mock-exam">Mock Exam</a>
+                        </div>
+                    </div>
+                    <div class="nav__dropdown" id="cefrDropdown">
+                        <button class="nav__link nav__dropdown-trigger">CEFR</button>
+                        <div class="nav__dropdown-menu">
+                            <a href="/cefr/a1">A1 — Beginner</a>
+                            <a href="/cefr/a2">A2 — Elementary</a>
+                            <a href="/cefr/b1">B1 — Intermediate</a>
+                            <a href="/cefr/b2">B2 — Upper Intermediate</a>
+                            <a href="/cefr/c1">C1 — Advanced</a>
+                            <a href="/cefr/c2">C2 — Proficient</a>
+                        </div>
+                    </div>
                     <a href="/leaderboard" class="nav__link">Leaderboard</a>
                 </div>
                 <div class="nav__auth">
@@ -58,25 +74,28 @@
         <div class="footer__inner">
             <div class="footer__cols">
                 <div class="footer__col">
-                    <h4>IELTS Pro</h4>
-                    <p>IELTS tayyorgarlik platformasi</p>
+                    <h4>IELTS ZONE</h4>
+                    <p>IELTS va CEFR tayyorgarlik platformasi</p>
                 </div>
                 <div class="footer__col">
-                    <h4>Testlar</h4>
+                    <h4>IELTS</h4>
                     <a href="/reading">Reading</a>
                     <a href="/listening">Listening</a>
                     <a href="/writing">Writing</a>
                     <a href="/speaking">Speaking</a>
                 </div>
                 <div class="footer__col">
-                    <h4>Resurslar</h4>
-                    <a href="/vocabulary">Vocabulary</a>
-                    <a href="/mock-exam">Mock Exam</a>
-                    <a href="/leaderboard">Leaderboard</a>
+                    <h4>CEFR</h4>
+                    <a href="/cefr/a1">A1</a>
+                    <a href="/cefr/a2">A2</a>
+                    <a href="/cefr/b1">B1</a>
+                    <a href="/cefr/b2">B2</a>
+                    <a href="/cefr/c1">C1</a>
+                    <a href="/cefr/c2">C2</a>
                 </div>
             </div>
             <div class="footer__bottom">
-                <p>&copy; 2026 IELTS Pro. All rights reserved.</p>
+                <p>&copy; 2026 IELTS ZONE. All rights reserved.</p>
             </div>
         </div>
     </footer>
@@ -84,6 +103,29 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             if (typeof lucide !== 'undefined') lucide.createIcons();
+            var toggle = document.getElementById('navToggle');
+            var menu = document.getElementById('navMenu');
+            if (toggle && menu) {
+                toggle.addEventListener('click', function() {
+                    menu.classList.toggle('open');
+                });
+            }
+            document.querySelectorAll('.nav__dropdown-trigger').forEach(function(trigger) {
+                trigger.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    var dd = this.closest('.nav__dropdown');
+                    var open = dd.classList.contains('open');
+                    document.querySelectorAll('.nav__dropdown.open').forEach(function(d) {
+                        d.classList.remove('open');
+                    });
+                    if (!open) dd.classList.add('open');
+                });
+            });
+            document.addEventListener('click', function() {
+                document.querySelectorAll('.nav__dropdown.open').forEach(function(d) {
+                    d.classList.remove('open');
+                });
+            });
         });
     </script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>

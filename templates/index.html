@@ -1,17 +1,41 @@
 {% extends "base.html" %}
-{% block title %}IELTS Pro — IELTS tayyorgarlik platformasi{% endblock %}
+{% block title %}IELTS ZONE — IELTS va CEFR tayyorgarlik platformasi{% endblock %}
 {% block content %}
-<section class="hero">
+<section class="hero anim-fade">
+    {% if current_user.is_authenticated %}
+    <div class="hero__greeting">Salom, {{ current_user.username }} 👋</div>
+    {% endif %}
     <span class="hero__tag">O'zbekistondagi eng yaxshi IELTS platformasi</span>
-    <h1>IELTSni zabt etish<br>endi osonroq</h1>
-    <p>Reading, Listening, Writing, Speaking — to'liq tayyorgarlik, real testlar va natijalar tahlili bilan</p>
+    <h1>IELTS va CEFR<br>tayyorgarlik markazi</h1>
+    <p>Reading, Listening, Writing, Speaking, Grammar, Vocabulary — to'liq tayyorgarlik, real testlar va natijalar tahlili bilan</p>
     <div class="hero__actions">
+        {% if current_user.is_authenticated %}
+        <a href="/reading" class="btn btn--primary btn--lg">Testlarni boshlash</a>
+        <a href="/profile" class="btn btn--lg">Mening profilim</a>
+        {% else %}
         <a href="/register" class="btn btn--primary btn--lg">Bepul boshlash</a>
         <a href="/reading" class="btn btn--lg">Testlarni ko'rish</a>
+        {% endif %}
     </div>
 </section>
 
-<div class="stats">
+{% if current_user.is_authenticated %}
+<div class="stats anim-fade-up anim-delay-1">
+    <div class="stat">
+        <div class="stat__number">{{ current_user.results|length }}</div>
+        <div class="stat__label">Testlar ishlangan</div>
+    </div>
+    <div class="stat">
+        <div class="stat__number">{{ current_user.score or 0 }}</div>
+        <div class="stat__label">Umumiy ball</div>
+    </div>
+    <div class="stat">
+        <div class="stat__number">6</div>
+        <div class="stat__label">Bo'limlar</div>
+    </div>
+</div>
+{% else %}
+<div class="stats anim-fade-up anim-delay-1">
     <div class="stat">
         <div class="stat__number">200+</div>
         <div class="stat__label">Testlar</div>
@@ -25,49 +49,50 @@
         <div class="stat__label">Bepul (asosiy)</div>
     </div>
 </div>
+{% endif %}
 
 <div class="features">
-    <h2>Barcha imkoniyatlar</h2>
+    <h2 class="anim-fade-up">Barcha imkoniyatlar</h2>
     <div class="features__grid">
-        <div class="feature-card">
+        <div class="feature-card anim-fade-up anim-delay-1">
             <div class="feature-card__icon"><i data-lucide="book-open" class="icon"></i></div>
             <h3>Reading</h3>
             <p>Academic va General Training reading testlari bilan mashq qiling</p>
         </div>
-        <div class="feature-card">
+        <div class="feature-card anim-fade-up anim-delay-2">
             <div class="feature-card__icon"><i data-lucide="headphones" class="icon"></i></div>
             <h3>Listening</h3>
             <p>Audio bilan real Listening testlarini ishlang</p>
         </div>
-        <div class="feature-card">
+        <div class="feature-card anim-fade-up anim-delay-3">
             <div class="feature-card__icon"><i data-lucide="pen-tool" class="icon"></i></div>
             <h3>Writing</h3>
             <p>Task 1 va Task 2 mavzulari, AI tekshirish</p>
         </div>
-        <div class="feature-card">
+        <div class="feature-card anim-fade-up anim-delay-4">
             <div class="feature-card__icon"><i data-lucide="mic" class="icon"></i></div>
             <h3>Speaking</h3>
             <p>Part 1, 2, 3 savollari va namuna javoblar</p>
         </div>
-        <div class="feature-card">
+        <div class="feature-card anim-fade-up anim-delay-5">
             <div class="feature-card__icon"><i data-lucide="book" class="icon"></i></div>
             <h3>Vocabulary</h3>
             <p>IELTS lug'ati, kategoriyalar bo'yicha</p>
         </div>
-        <div class="feature-card">
+        <div class="feature-card anim-fade-up anim-delay-6">
             <div class="feature-card__icon"><i data-lucide="trophy" class="icon"></i></div>
             <h3>Mock Exam</h3>
             <p>To'liq imtihon, real vaqt bilan</p>
         </div>
-        <div class="feature-card">
+        <div class="feature-card anim-fade-up anim-delay-7">
             <div class="feature-card__icon"><i data-lucide="bar-chart-3" class="icon"></i></div>
             <h3>Natijalar</h3>
             <p>Barcha natijalaringiz tarixi va tahlili</p>
         </div>
-        <div class="feature-card">
-            <div class="feature-card__icon"><i data-lucide="crown" class="icon"></i></div>
-            <h3>Leaderboard</h3>
-            <p>Boshqa foydalanuvchilar bilan reyting</p>
+        <div class="feature-card anim-fade-up anim-delay-8">
+            <div class="feature-card__icon"><i data-lucide="layers" class="icon"></i></div>
+            <h3>CEFR Levels</h3>
+            <p>A1 dan C2 gacha darajalar bo'yicha tayyorgarlik</p>
         </div>
     </div>
 </div>

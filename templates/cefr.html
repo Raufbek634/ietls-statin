@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}CEFR Levels — IELTS ZONE{% endblock %}
+{% block content %}
+<div class="section anim-fade">
+    <div class="section__header">
+        <h1>CEFR Levels</h1>
+        <p>Common European Framework of Reference for Languages — A1 dan C2 gacha</p>
+    </div>
+    <div class="level-grid">
+        <a href="/cefr/a1" class="level-card anim-fade-up anim-delay-1" style="display:block">
+            <div class="level-card__title">A1</div>
+            <div class="level-card__label">Beginner</div>
+        </a>
+        <a href="/cefr/a2" class="level-card anim-fade-up anim-delay-2" style="display:block">
+            <div class="level-card__title">A2</div>
+            <div class="level-card__label">Elementary</div>
+        </a>
+        <a href="/cefr/b1" class="level-card anim-fade-up anim-delay-3" style="display:block">
+            <div class="level-card__title">B1</div>
+            <div class="level-card__label">Intermediate</div>
+        </a>
+        <a href="/cefr/b2" class="level-card anim-fade-up anim-delay-4" style="display:block">
+            <div class="level-card__title">B2</div>
+            <div class="level-card__label">Upper Intermediate</div>
+        </a>
+        <a href="/cefr/c1" class="level-card anim-fade-up anim-delay-5" style="display:block">
+            <div class="level-card__title">C1</div>
+            <div class="level-card__label">Advanced</div>
+        </a>
+        <a href="/cefr/c2" class="level-card anim-fade-up anim-delay-6" style="display:block">
+            <div class="level-card__title">C2</div>
+            <div class="level-card__label">Proficient</div>
+        </a>
+    </div>
+</div>
+
+<div class="section anim-fade-up anim-delay-3">
+    <h2 class="section__header" style="border:none;padding:0;margin-bottom:24px">Nima uchun CEFR?</h2>
+    <div class="grid">
+        <div class="card">
+            <div class="feature-card__icon" style="margin-bottom:12px"><i data-lucide="check-circle" class="icon" style="width:22px;height:22px;stroke:var(--accent);stroke-width:2"></i></div>
+            <h3 style="font-size:1rem;font-weight:600;margin-bottom:6px">Aniq daraja</h3>
+            <p style="font-size:0.875rem;color:var(--text-secondary)">Til bilish darajangizni aniq bilib oling</p>
+        </div>
+        <div class="card">
+            <div class="feature-card__icon" style="margin-bottom:12px"><i data-lucide="trending-up" class="icon" style="width:22px;height:22px;stroke:var(--accent);stroke-width:2"></i></div>
+            <h3 style="font-size:1rem;font-weight:600;margin-bottom:6px">Progress</h3>
+            <p style="font-size:0.875rem;color:var(--text-secondary)">Har bir bosqichda o'sishingizni kuzating</p>
+        </div>
+        <div class="card">
+            <div class="feature-card__icon" style="margin-bottom:12px"><i data-lucide="target" class="icon" style="width:22px;height:22px;stroke:var(--accent);stroke-width:2"></i></div>
+            <h3 style="font-size:1rem;font-weight:600;margin-bottom:6px">IELTS ga tayyorgarlik</h3>
+            <p style="font-size:0.875rem;color:var(--text-secondary)">CEFR darajalari IELTS ballariga mos keladi</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

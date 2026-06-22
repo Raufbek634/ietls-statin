@@ -1,31 +1,46 @@
 {% extends "base.html" %}
-{% block title %}Profile — IELTS Pro{% endblock %}
+{% block title %}Profile — IELTS ZONE{% endblock %}
 {% block content %}
-<div class="section">
+<div class="section anim-fade">
     <div class="section__header">
-        <h1>Profile</h1>
-        <p>{{ current_user.username }}</p>
+        <h1>Salom, {{ current_user.username }}</h1>
+        <p>Statistikangiz</p>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px">
-        <div class="card">
-            <div class="stat" style="text-align:left;padding:0">
-                <div class="stat__number">{{ current_user.score or 0 }}</div>
-                <div class="stat__label">Total Score</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px">
+        <div class="card anim-fade-up anim-delay-1">
+            <div style="display:flex;align-items:center;gap:16px">
+                <div class="feature-card__icon" style="margin:0">
+                    <i data-lucide="file-text" class="icon" style="width:22px;height:22px;stroke:var(--accent);stroke-width:2"></i>
+                </div>
+                <div>
+                    <div class="stat__number" style="font-size:1.75rem">{{ current_user.results|length }}</div>
+                    <div class="stat__label">Testlar ishlangan</div>
+                </div>
             </div>
         </div>
-        <div class="card">
-            <div class="stat" style="text-align:left;padding:0">
-                <div class="stat__number">{{ current_user.results|length }}</div>
-                <div class="stat__label">Tests Taken</div>
+        <div class="card anim-fade-up anim-delay-2">
+            <div style="display:flex;align-items:center;gap:16px">
+                <div class="feature-card__icon" style="margin:0">
+                    <i data-lucide="award" class="icon" style="width:22px;height:22px;stroke:var(--accent);stroke-width:2"></i>
+                </div>
+                <div>
+                    <div class="stat__number" style="font-size:1.75rem">{{ current_user.score or 0 }}</div>
+                    <div class="stat__label">Umumiy ball</div>
+                </div>
             </div>
         </div>
-        <div class="card">
-            <div class="stat" style="text-align:left;padding:0">
-                {% if current_user.is_premium %}
-                <div class="badge badge--premium">Premium</div>
-                {% else %}
-                <div class="stat__label">Free Account</div>
-                {% endif %}
+        <div class="card anim-fade-up anim-delay-3">
+            <div style="display:flex;align-items:center;gap:16px">
+                <div class="feature-card__icon" style="margin:0">
+                    <i data-lucide="crown" class="icon" style="width:22px;height:22px;stroke:var(--accent);stroke-width:2"></i>
+                </div>
+                <div>
+                    {% if current_user.is_premium %}
+                    <div class="badge badge--premium" style="font-size:0.875rem">Premium</div>
+                    {% else %}
+                    <div class="stat__label" style="font-size:1rem">Free Account</div>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
